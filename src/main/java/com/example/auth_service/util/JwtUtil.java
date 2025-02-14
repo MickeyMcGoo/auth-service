@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
@@ -37,9 +38,8 @@ public class JwtUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        JwtParser parser = Jwts.parserBuilder() // ✅ Correct for JJWT 0.12.5
-                .setSigningKey(getSignKey())
-                .build();
+        JwtParserBuilder parserBuilder = Jwts.parserBuilder(); // ✅ Explicitly define parserBuilder
+        JwtParser parser = parserBuilder.setSigningKey(getSignKey()).build();
         final Jws<Claims> claimsJws = parser.parseClaimsJws(token);
         return claimsResolver.apply(claimsJws.getBody());
     }
