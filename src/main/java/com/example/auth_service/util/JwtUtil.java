@@ -38,11 +38,13 @@ public class JwtUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        JwtParser parser = Jwts.parser() // ✅ Change to parser() instead of parserBuilder()
-                .setSigningKey(getSignKey());
-        final Jws<Claims> claimsJws = parser.parseClaimsJws(token);
-        return claimsResolver.apply(claimsJws.getBody());
+        JwtParser parser = Jwts.parser() // ✅ This now returns a builder
+                .verifyWith(getSignKey()) // ✅ New method in JJWT 0.12.x
+                .build(); // ✅ Must explicitly build the parser
+        final Jws<Claims> claimsJws = parser.parseSignedClaims(token);
+        return claimsResolver.apply(claimsJws.getPayload());
     }
+
 
 
     public boolean validateToken(String token, String username) {
