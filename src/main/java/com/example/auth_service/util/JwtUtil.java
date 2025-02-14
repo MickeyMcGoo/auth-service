@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import java.security.Key;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtUtil {
-    private static final String SECRET_KEY = "your-very-long-secret-key-your-very-long-secret-key"; // Must be 32+ characters
+    private static final String SECRET_KEY = "your-very-long-secret-key-your-very-long-secret-key-your-very-long-secret-key"; // Must be at least 32 characters
 
     private Key getSignKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
@@ -25,7 +24,7 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 hour validity
-                .signWith(SignatureAlgorithm.HS256, getSignKey())
+                .signWith(getSignKey())
                 .compact();
     }
 
@@ -38,7 +37,9 @@ public class JwtUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        JwtParser parser = Jwts.parser().setSigningKey(getSignKey()); // Fix: Use parser() instead of parserBuilder()
+        JwtParser parser = Jwts.parserBuilder() // ✅ Correct for JJWT 0.12.5
+                .setSigningKey(getSignKey())
+                .build();
         final Jws<Claims> claimsJws = parser.parseClaimsJws(token);
         return claimsResolver.apply(claimsJws.getBody());
     }
