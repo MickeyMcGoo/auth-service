@@ -11,12 +11,13 @@ import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
 import org.springframework.stereotype.Component;
+import javax.crypto.SecretKey;
 
 @Component
 public class JwtUtil {
     private static final String SECRET_KEY = "your-very-long-secret-key-your-very-long-secret-key-your-very-long-secret-key"; // Must be at least 32 characters
 
-    private Key getSignKey() {
+    private SecretKey getSignKey() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
     }
 
@@ -38,12 +39,13 @@ public class JwtUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        JwtParser parser = Jwts.parser() // ✅ This now returns a builder
-                .verifyWith(getSignKey()) // ✅ New method in JJWT 0.12.x
-                .build(); // ✅ Must explicitly build the parser
+        JwtParser parser = Jwts.parser()
+                .verifyWith(getSignKey())  // ✅ Now correctly uses a SecretKey
+                .build();
         final Jws<Claims> claimsJws = parser.parseSignedClaims(token);
         return claimsResolver.apply(claimsJws.getPayload());
     }
+
 
 
 
