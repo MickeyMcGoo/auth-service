@@ -1,6 +1,6 @@
-package com.example.auth.controller;
+package com.example.auth_service.controller;
 
-import com.example.auth.service.AuthService;
+import com.example.auth_service.service.AuthService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,3 +22,4 @@ public class AuthController {
         return authService.authenticateUser(email, password);
     }
 }
+

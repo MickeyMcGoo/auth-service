@@ -1,6 +1,6 @@
-package com.example.auth.config;
+package com.example.auth_service.config;
 
-import com.example.auth.security.JwtAuthenticationFilter;
+import com.example.auth_service.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import java.util.List;
 
 @Configuration
@@ -31,7 +30,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF for API
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No session, stateless JWT
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Allow registration & login
+                .requestMatchers("/api/auth/**").permitAll() // Allow authentication endpoints
                 .anyRequest().authenticated() // Secure all other endpoints
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -52,3 +51,4 @@ public class SecurityConfig {
         return new ProviderManager(List.of(authProvider));
     }
 }
+
