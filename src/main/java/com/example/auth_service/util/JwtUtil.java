@@ -37,12 +37,13 @@ public class JwtUtil {
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = Jwts.parserBuilder()
+        final Claims claims = Jwts.parser()  // Use parser() instead of parserBuilder()
                 .setSigningKey(getSignKey())
-                .build()
                 .parseClaimsJws(token)
                 .getBody();
         return claimsResolver.apply(claims);
+}
+
     }
 
     public boolean validateToken(String token, String username) {
