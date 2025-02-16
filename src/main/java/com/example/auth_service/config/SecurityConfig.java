@@ -52,9 +52,9 @@ public class SecurityConfig {
     @Primary
     public UserDetailsService userDetailsService() {
         return username -> {
-            if ("admin".equals(username)) {
-                return User.withUsername("admin")
-                    .password("$2a$10$7Q2Hq9UQ5jB1BZsXbTtVwOPx/zEfU2dF90qGJv/L2ixilbV6g2Kpi") // ✅ Pre-encoded password for "password"
+            if ("admin@example.com".equals(username)) {
+                return User.withUsername("admin@example.com")
+                    .password(passwordEncoder().encode("password")) // ✅ Ensure password is properly encoded
                     .roles("USER")
                     .build();
             }
