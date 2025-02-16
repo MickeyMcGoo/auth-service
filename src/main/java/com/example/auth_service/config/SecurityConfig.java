@@ -9,11 +9,14 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import java.util.List;
 
 @Configuration
@@ -30,8 +33,8 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF for API
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // No session, stateless JWT
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Allow authentication endpoints
-                .anyRequest().authenticated() // Secure all other endpoints
+                .requestMatchers("/api/auth/**", "/login").permitAll() // ✅ Ensure /login is accessible
+                .anyRequest().authenticated()
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -44,11 +47,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return new ProviderManager(List.of(authProvider));
+    public UserDetailsService userDetailsService() {
+        return username -> {
+            if ("admin".equals(username)) {
+                return User.withUsername("admin")
+                    .password(passwordEncoder().encode("password")) // ✅ Ensure password is encoded
+                    .roles("USER")
+                    .build();
+            }
+            throw new UsernameNotFoundException("User not found");
+        };
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }
-
