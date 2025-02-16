@@ -2,7 +2,6 @@ package com.example.auth_service.config;
 
 import com.example.auth_service.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -17,14 +16,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.context.annotation.Primary;
 
 import java.util.List;
 
 @Configuration
 public class SecurityConfig {
 
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless JWT
@@ -32,7 +38,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**", "/login", "/test/**").permitAll() // ✅ Allow public endpoints
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Place JWT filter after login
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Auto-injected
 
         return http.build();
     }
@@ -43,7 +49,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Primary // ✅ Ensures this is the main UserDetailsService
+    @Primary
     public UserDetailsService userDetailsService() {
         return username -> {
             if ("admin".equals(username)) {
@@ -62,11 +68,6 @@ public class SecurityConfig {
         authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder); // ✅ Ensure password encoder is set
 
-        return new ProviderManager(List.of(authProvider)); // ✅ Uses this provider for authentication
-    }
-
-    @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter();
+        return new ProviderManager(List.of(authProvider));
     }
 }
