@@ -1,25 +1,45 @@
 package com.example.auth_service.controller;
 
 import com.example.auth_service.service.AuthService;
+import com.example.auth_service.util.JwtUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authService = authService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam String email, @RequestParam String password) {
-        return authService.registerUser(email, password);
+    public ResponseEntity<String> register(@RequestBody AuthRequest authRequest) {
+        String result = authService.registerUser(authRequest.getEmail(), authRequest.getPassword());
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password) {
-        return authService.authenticateUser(email, password);
+    public ResponseEntity<?> login(@RequestBody AuthRequest authRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
+            );
+
+            String token = jwtUtil.generateToken(authRequest.getEmail());
+            return ResponseEntity.ok(new AuthResponse(token));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+        }
     }
 }
-
