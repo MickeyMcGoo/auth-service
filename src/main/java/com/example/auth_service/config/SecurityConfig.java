@@ -35,10 +35,10 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Stateless JWT
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/auth/login", "/api/auth/register", "/test/**").permitAll() // ✅ Fix: Correct `/login` path
+                .requestMatchers("/api/auth/**", "/api/auth/login", "/api/auth/register", "/test/**").permitAll() // ✅ Explicitly allow login/register
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Auto-injected
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // ✅ Ensure JWT filter runs AFTER login
 
         return http.build();
     }
