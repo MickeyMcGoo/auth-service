@@ -1,0 +1,9 @@
+﻿{
+  "agentId": 2,
+  "agentName": "Michaels-MBP",
+  "poolId": 1,
+  "poolName": "Default",
+  "serverUrl": "https://pipelinesghubeus15.actions.githubusercontent.com/pr0lkkoxdUiU4hTo2LEJF6AvTthvz18pjdQJCrx01ju83ymRjz/",
+  "gitHubUrl": "https://github.com/MickeyMcGoo/auth-service",
+  "workFolder": "_work"
+}
