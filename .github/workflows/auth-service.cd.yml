@@ -64,6 +64,9 @@ jobs:
       - name: Start Minikube Tunnel in Background
         run: |
           nohup minikube tunnel &  # Run the tunnel in the background
+          disown
 
+      - name: Get Minikube Service URL
+        run: |
           SERVICE_URL=$(minikube service auth-service --url)
           echo "Auth Service is available at: $SERVICE_URL"
