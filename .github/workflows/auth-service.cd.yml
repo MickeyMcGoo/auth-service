@@ -50,6 +50,10 @@ jobs:
       - name: Wait for Deployment to Complete
         run: kubectl rollout status deployment/auth-service
 
+      - name: Start Minikube Tunnel in Background
+        run: |
+          minikube tunnel &  # Run the tunnel in the background
+
       - name: Get Minikube Service URL
         run: |
           SERVICE_URL=$(minikube service auth-service --url)
