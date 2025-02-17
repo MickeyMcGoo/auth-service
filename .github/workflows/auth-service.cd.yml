@@ -57,6 +57,8 @@ jobs:
           if [ -n "$TUNNEL_PID" ]; then
             echo "Existing tunnel found. Killing process with PID $TUNNEL_PID"
             kill -9 $TUNNEL_PID
+          else
+            echo "No existing tunnel found. Proceeding with starting a new one."
           fi
 
       - name: Start Minikube Tunnel in Background
