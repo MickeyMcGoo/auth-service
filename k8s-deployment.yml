@@ -16,7 +16,7 @@ spec:
         - name: ghcr-secret  # ✅ Uses Kubernetes secret for GHCR authentication
       containers:
         - name: auth-service
-          image: ghcr.io/mickeymcgoo/auth-service:latest
+          image: ghcr.io/mickeymcgoo/auth-service/auth-service:latest
           ports:
             - containerPort: 9090
           env:
