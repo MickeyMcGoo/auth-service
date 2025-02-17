@@ -53,7 +53,7 @@ jobs:
       - name: Ensure No Existing Minikube Tunnel is Running
         run: |
           # Check if a tunnel is already running and kill it
-          TUNNEL_PID=$(pgrep -f "minikube tunnel")
+          TUNNEL_PID=$(pgrep -f "minikube tunnel" || true)
           if [ -n "$TUNNEL_PID" ]; then
             echo "Existing tunnel found. Killing process with PID $TUNNEL_PID"
             kill -9 $TUNNEL_PID
