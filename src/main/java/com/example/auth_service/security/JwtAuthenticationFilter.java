@@ -34,10 +34,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-                
+
         String path = request.getServletPath();
         // ✅ Bypass JWT filter for login and register
-        if (path.startsWith("/api/auth") || path.equals("/actuator/health")) {
+        if (path.startsWith("/api/auth") || path.equals("/actuator")) {
             chain.doFilter(request, response);
             return;
         }
