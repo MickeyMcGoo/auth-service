@@ -50,6 +50,15 @@ jobs:
       - name: Wait for Deployment to Complete
         run: kubectl rollout status deployment/auth-service
 
+      - name: Ensure No Existing Minikube Tunnel is Running
+        run: |
+          # Check if a tunnel is already running and kill it
+          TUNNEL_PID=$(pgrep -f "minikube tunnel")
+          if [ -n "$TUNNEL_PID" ]; then
+            echo "Existing tunnel found. Killing process with PID $TUNNEL_PID"
+            kill -9 $TUNNEL_PID
+          fi
+
       - name: Start Minikube Tunnel in Background
         run: |
           minikube tunnel &  # Run the tunnel in the background
