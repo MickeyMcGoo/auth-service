@@ -30,11 +30,14 @@ jobs:
       - name: Run Tests
         run: mvn test
 
+      - name: Convert Repository Name to Lowercase
+        run: echo "REPO_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
 
       - name: Build Docker Image
-        run: docker build -t ghcr.io/${{ secrets.GHCR_USERNAME }}/auth-service:latest .
+        run: docker build -t ghcr.io/${{ env.REPO_NAME }}/auth-service:latest .
 
       - name: Push Docker Image to GHCR
-        run: docker push ghcr.io/${{ secrets.GHCR_USERNAME }}/auth-service:latest
+        run: docker push ghcr.io/${{ env.REPO_NAME }}/auth-service:latest

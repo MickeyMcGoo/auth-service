@@ -6,7 +6,7 @@ on:
     types:
       - completed
     branches:
-      - main  # ✅ Ensures CD runs only when CI on 'main' completes
+      - main
 
 jobs:
   deploy:
@@ -17,8 +17,11 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Convert Repository Name to Lowercase
+        run: echo "REPO_NAME=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
       - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
 
       - name: Ensure Minikube is Running
         run: |
@@ -33,7 +36,7 @@ jobs:
         run: eval $(minikube docker-env)
 
       - name: Pull Latest Image from GHCR
-        run: docker pull ghcr.io/${{ secrets.GHCR_USERNAME }}/my-auth-service:latest
+        run: docker pull ghcr.io/${{ env.REPO_NAME }}/auth-service:latest
 
       - name: Apply Kubernetes Deployment
         run: kubectl apply -f k8s-deployment.yml
