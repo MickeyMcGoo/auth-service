@@ -5,8 +5,6 @@ on:
     workflows: ["Continuous Integration"]
     types:
       - completed
-    branches:
-      - main
 
 jobs:
   deploy:
@@ -38,11 +36,16 @@ jobs:
       - name: Pull Latest Image from GHCR
         run: docker pull ghcr.io/${{ env.REPO_NAME }}/auth-service:latest
 
-      - name: Apply Kubernetes Deployment
-        run: kubectl apply -f k8s-deployment.yml
+      - name: Apply Kubernetes Deployment (Ensure File Exists)
+        run: |
+          if [ ! -f k8s-deployment.yml ]; then
+            echo "ERROR: k8s-deployment.yml not found!"
+            exit 1
+          fi
+          kubectl apply -f k8s-deployment.yml
 
       - name: Wait for Deployment to Complete
         run: kubectl rollout status deployment/auth-service
 
-      - name: Get Service URL
-        run: minikube service auth-service --url
+      - name: Get Minikube Service URL
+        run: echo "Auth Service URL: $(minikube service auth-service --url)"
