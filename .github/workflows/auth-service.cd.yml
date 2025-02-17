@@ -63,7 +63,7 @@ jobs:
 
       - name: Start Port Forwarding for Auth Service
         run: |
-          kubectl port-forward svc/auth-service 8080:80 &  # Forward the service port to local machine
+          kubectl port-forward svc/auth-service 8080:9090 &  # Forward the service port to local machine
           disown  # Detach from the shell so the job can continue
-          echo "Auth Service is available at: http://localhost:8080
+          echo "Auth Service is available at: http://localhost:8080"
 
