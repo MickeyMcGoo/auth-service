@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Ignore self-hosted runner files
+.runner/
+_work/
+.setup-logs/
+.docker/
+target/
