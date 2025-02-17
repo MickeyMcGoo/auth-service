@@ -61,7 +61,7 @@ jobs:
 
       - name: Start Minikube Tunnel in Background
         run: |
-          minikube tunnel &  # Run the tunnel in the background
+          nohup minikube tunnel &  # Run the tunnel in the background
 
       - name: Get Minikube Service URL
         run: |
