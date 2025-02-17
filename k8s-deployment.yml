@@ -12,6 +12,8 @@ spec:
       labels:
         app: auth-service
     spec:
+      imagePullSecrets:
+        - name: ghcr-secret  # ✅ Uses Kubernetes secret for GHCR authentication
       containers:
         - name: auth-service
           image: ghcr.io/mickeymcgoo/auth-service:latest
