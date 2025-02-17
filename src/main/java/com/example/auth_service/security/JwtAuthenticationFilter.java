@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // ✅ Bypass JWT filter for login and register
-        if (request.getServletPath().startsWith("/api/auth")) {
+        if (path.startsWith("/api/auth") || path.equals("/actuator/health")) {
             chain.doFilter(request, response);
             return;
         }
