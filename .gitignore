@@ -70,3 +70,5 @@ actions-runner/_diag/blocks/b5296688-0c77-4aa9-b5be-67a9be4829a8_6709490b-40de-5
 actions-runner/_diag/pages/b5296688-0c77-4aa9-b5be-67a9be4829a8_6709490b-40de-5224-9c70-ee9a5f93737c_1.log
 actions-runner/_diag/blocks/b5296688-0c77-4aa9-b5be-67a9be4829a8_e07742bd-189a-5079-918b-43f8b2f94b89.1
 actions-runner/_diag/pages/b5296688-0c77-4aa9-b5be-67a9be4829a8_e07742bd-189a-5079-918b-43f8b2f94b89_1.log
+# Ignore all diagnostic logs and blocks in actions-runner/_diag/
+actions-runner/_diag/*
