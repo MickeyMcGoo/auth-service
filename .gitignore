@@ -38,3 +38,4 @@ _work/
 .setup-logs/
 .docker/
 target/
+actions-runner/_diag/Worker_20250217-104721-utc.log
