@@ -50,6 +50,6 @@ jobs:
         run: kubectl rollout status deployment/auth-service
 
       - name: Get Minikube Service URL
-      run: |
-        SERVICE_URL=$(minikube service auth-service --url)
-        echo "Auth Service is available at: $SERVICE_URL"
+        run: |
+          SERVICE_URL=$(minikube service auth-service --url)
+          echo "Auth Service is available at: $SERVICE_URL"
