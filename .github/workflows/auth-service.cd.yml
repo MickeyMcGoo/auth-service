@@ -61,12 +61,9 @@ jobs:
             echo "No existing tunnel found. Proceeding with starting a new one."
           fi
 
-      - name: Start Minikube Tunnel in Background
+      - name: Start Port Forwarding for Auth Service
         run: |
-          nohup minikube tunnel &  # Run the tunnel in the background
-          disown
+          kubectl port-forward svc/auth-service 8080:80 &  # Forward the service port to local machine
+          disown  # Detach from the shell so the job can continue
+          echo "Auth Service is available at: http://localhost:8080
 
-      - name: Get Minikube Service URL
-        run: |
-          SERVICE_URL=$(minikube service auth-service --url)
-          echo "Auth Service is available at: $SERVICE_URL"
